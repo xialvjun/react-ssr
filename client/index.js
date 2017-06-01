@@ -1,9 +1,8 @@
 import 'babel-polyfill'
 import React from 'react'
 import { render } from 'react-dom'
-// import { Provider } from 'react-redux'
+import { StaticRouter, BrowserRouter } from 'react-router-dom'
 import { ApolloProvider, getDataFromTree } from 'react-apollo'
-// import configureStore from '../common/store/configureStore'
 import { initApollo, initRedux } from '../common/store'
 import App from '../common/containers/App'
 
@@ -16,7 +15,7 @@ const rootElement = document.getElementById('app')
 
 render(
   <ApolloProvider client={apollo} store={redux}>
-    <App />
+    <BrowserRouter><App /></BrowserRouter>
   </ApolloProvider>,
   rootElement
 )

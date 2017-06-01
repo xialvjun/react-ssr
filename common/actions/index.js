@@ -1,7 +1,8 @@
 import { initRedux } from '../store'
-// initReudx 在网页端有缓存，不会重复创建 store ，所以不用担心
+
 let store;
 try {
+  // initReudx 在网页端有缓存，不会重复创建 store ，所以不用担心。这里仅仅是尝试取出 store
   store = initRedux()
 } catch (error) {
   store = { dispatch: function() {} }

@@ -11,13 +11,11 @@ import webpackConfig from '../webpack.config'
 
 import React from 'react'
 import { renderToString } from 'react-dom/server'
-// import { Provider } from 'react-redux'
+import { StaticRouter } from 'react-router-dom'
 import { ApolloProvider, getDataFromTree } from 'react-apollo'
 
-// import configureStore from '../common/store/configureStore'
 import { initApollo, initRedux } from '../common/store'
 import App from '../common/containers/App'
-// import { fetchCounter } from '../common/api/counter'
 
 const app = new Express()
 const port = 3000
@@ -27,32 +25,38 @@ const compiler = webpack(webpackConfig)
 app.use(webpackDevMiddleware(compiler, { noInfo: true, publicPath: webpackConfig.output.publicPath }))
 app.use(webpackHotMiddleware(compiler))
 
-// This is fired every time the server side receives a request
 app.use(async (req, res) => {
   try {
     const apollo = initApollo()
     const redux = initRedux(apollo)
 
-    // Run all graphql queries
-    const app = (
-      // No need to use the Redux Provider
-      // because Apollo sets up the store for us
+    const context = {}
+
+    const vdom = (
       <ApolloProvider client={apollo} store={redux}>
-        <App />
+        <StaticRouter location={req.url} context={context}>
+          <App />
+        </StaticRouter>
       </ApolloProvider>
     )
-    await getDataFromTree(app)
-    const html = renderToString(app)
+    // Run all graphql queries
+    await getDataFromTree(vdom)
+    const html = renderToString(vdom)
 
-    // Extract query data from the store
-    const state = redux.getState()
-    res.send(renderFullPage(html, state))
+    if (context.url) {
+      // Somewhere a `<Redirect>` was rendered
+      res.redirect(context.status || 301, context.url)
+    } else {
+      // Extract query data from the store
+      const state = redux.getState()
+      res.send(renderFullPage(html, state))
+    }
   } catch (error) {
     res.end(500)
   }
 })
 
-const renderFullPage = (html, preloadedState) => {
+function renderFullPage(html, preloadedState) {
   return `
     <!doctype html>
     <html>
