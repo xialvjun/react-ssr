@@ -1,3 +1,6 @@
+import { bindActionCreators } from 'redux'
+import { createAction, createReducer } from 'redux-act'
+
 import { initRedux } from '../store'
 
 let store;
@@ -7,6 +10,14 @@ try {
 } catch (error) {
   store = { dispatch: function() {} }
 }
+
+const set_token = createAction('set_token')
+
+const get_token = {};
+
+export const origin_actions = Object.freeze({ set_token })
+
+export const bound_actions = bindActionCreators(origin_actions, store.dispatch)
 
 // export const SET_COUNTER = 'SET_COUNTER'
 // export const INCREMENT_COUNTER = 'INCREMENT_COUNTER'
@@ -40,3 +51,6 @@ export const incrementAsync = (delay = 1000) => dispatch => {
     dispatch(increment())
   }, delay)
 }
+
+
+bindActionCreators()

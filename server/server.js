@@ -39,16 +39,36 @@ app.use(async (req, res) => {
         </StaticRouter>
       </ApolloProvider>
     )
+
+    // // Run all graphql queries
+    // await getDataFromTree(vdom)
+    // const html = renderToString(vdom)
+
+    // if (context.url) {
+    //   // Somewhere a `<Redirect>` was rendered
+    //   res.redirect(context.status || 301, context.url)
+    // } else {
+    //   // Extract query data from the store
+    //   const state = redux.getState()
+    //   res.send(renderFullPage(html, state))
+    // }
+
+
+    // 查看 apollo 源代码，发现是在高阶组建的 componentDidMount 里查询数据的。。说明 getDataFromTree 会运行组建的 constructor componentDidMount 
+    // 另外，我们也知道 renderToString 会运行 constructor 但不会运行 componentDidMount
+    // 所以，想要得到最正确的 state，应该在 getDataFromTree 就立即获取 state
+    // 但是，apollo 的 getDataFromTree 能 await 不代表自己的 componentDidMount 里的异步操作也被 await
+    // 所以可以相信自己的同步 state，但不可以相信自己的异步 state
     // Run all graphql queries
     await getDataFromTree(vdom)
-    const html = renderToString(vdom)
-
+    
     if (context.url) {
       // Somewhere a `<Redirect>` was rendered
       res.redirect(context.status || 301, context.url)
     } else {
       // Extract query data from the store
       const state = redux.getState()
+      const html = renderToString(vdom)
       res.send(renderFullPage(html, state))
     }
   } catch (error) {
