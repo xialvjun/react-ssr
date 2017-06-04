@@ -1,10 +1,16 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 
+let aaa = 0
+
 class Counter extends React.Component {
   constructor(props) {
     super(arguments)
+    console.log('constructor', aaa++)
     props.increment()
+  }
+  componentDidMount() {
+    console.log('cdm')
   }
   render() {
     const {increment, incrementIfOdd, incrementAsync, decrement, counter} = this.props

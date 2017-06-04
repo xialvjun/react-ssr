@@ -13,7 +13,7 @@ const token = createReducer({
             }
             return token
         } catch (error) {
-            return token
+            return null
         }
     }
 }, null)

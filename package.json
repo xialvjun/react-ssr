@@ -30,6 +30,7 @@
     "react-redux": "^5.0.3",
     "react-router-dom": "^4.1.1",
     "redux": "^3.2.1",
+    "redux-act": "^1.2.0",
     "redux-thunk": "^2.2.0",
     "serve-static": "^1.12.1"
   },

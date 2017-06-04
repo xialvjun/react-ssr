@@ -1,5 +1,6 @@
 import { bindActionCreators } from 'redux'
 import { createAction, createReducer } from 'redux-act'
+// import {  }
 
 import { initRedux } from '../store'
 
@@ -13,7 +14,7 @@ try {
 
 const set_token = createAction('set_token')
 
-const get_token = {};
+const get_token = {}
 
 export const origin_actions = Object.freeze({ set_token })
 
@@ -53,4 +54,4 @@ export const incrementAsync = (delay = 1000) => dispatch => {
 }
 
 
-bindActionCreators()
+// bindActionCreators()
