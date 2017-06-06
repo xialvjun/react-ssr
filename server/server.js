@@ -74,6 +74,12 @@ app.use(async (req, res) => {
     // 后经更详细测试， getDataFromTree 并不会运行组件的 componentDidMount 或者说它只运行 graphql 高阶组件的 componentDidMount
     // Run all graphql queries
     await getDataFromTree(vdom)
+    // 其实 react-apollo 有个 renderToStringWithData 方法，相当于 getDataFromTree(vdom).then(()=>renderToString(vdom)) 仍然是运行了两次 constructor
+    // 上面有误以为 getDataFromTree 有运行 componentDidMount 。。。其实不是的，getDataFromTree 是因为 react-apollo 的 graphql 方法给高阶组建提供了个 fetchData 方法
+    // fetchData 方法仅仅在服务端渲染时运行，同时它也无需担心之后在客户端再次运行，因为实际上再次运行也只是从 store 中取数据
+    // 当然，其实 fetchData 并没有在客户端再次运行，仅仅是真正的取数据方法不是 fetchData，而是 apolloClient.watchQuery ... fetchData 仅仅是一个包装
+    // 上面说明要 ssr 必须使用能缓存请求的 store 结构，且所有的获取数据都是优先获取缓存
+    // 另外，注意获取数据的并发和顺序。。。兄弟组件获取数据，可以 Promise.all 而父子组件需要 await
 
     // 见 common/components/App.js 的 git 记录，也许服务端永远都不应该 redirect，因为服务端没有足够的 reduxStore 的内容来判断
     // if (context.url) {
